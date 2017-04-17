@@ -137,7 +137,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1867849966864872}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf7e78aca711e4093935280c9e8fa4ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 967a5f1f2ef2648d296e7994f32fabd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114538210711039600
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   smoke: {fileID: 198185267445963800}
+  splash: {fileID: 198623959637853718, guid: b84f50be849ea45dba72b2a35e96fc76, type: 2}
 --- !u!135 &135848129743345760
 SphereCollider:
   m_ObjectHideFlags: 1

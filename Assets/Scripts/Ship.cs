@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class Ship : MonoBehaviour 
 {
+	public static readonly string PlayerShipTag = "playerShip";
+
 	private struct CannonGroup
 	{
 		public float distanceToTarget;
@@ -120,7 +123,7 @@ public class Ship : MonoBehaviour
 					}
 				}
 
-				Debug.Log("Distance to fire: " + currentDistance);
+//				Debug.Log("Distance to fire: " + currentDistance);
 
 				// If we found a cannon-group, then order it to fire at the target
 				if (cannonsSelected.cannonController != null)
@@ -187,7 +190,7 @@ public class Ship : MonoBehaviour
 
 	private void ApplyMovement()
 	{
-		debugText.text = "Forward movement: " + Vector3.forward * (float)numberOfSailsUp + "\n Velocity: " + myRigidbody.velocity.magnitude;
+//		debugText.text = "Forward movement: " + Vector3.forward * (float)numberOfSailsUp + "\n Velocity: " + myRigidbody.velocity.magnitude;
 		ForceMode forceModeToUse = ForceMode.Force;
 
 		// Apply forward movement based on the number of unfurled sails
@@ -197,14 +200,40 @@ public class Ship : MonoBehaviour
 			myRigidbody.AddRelativeForce (Vector3.forward, forceModeToUse);	// always apply a little forward motion, so we can always steer
 
 		// Apply rotational torque based on the speed of the ship. We can't turn the ship, if we don't have any movement
-		if (Input.GetAxis("Horizontal") > 0)
-			myRigidbody.AddRelativeTorque(Vector3.up * myRigidbody.velocity.magnitude * (numberOfSailsUp > 0?(float)numberOfSailsUp * maxVelocityPerSail : 0.1f * maxVelocityPerSail), forceModeToUse);
-		else if (Input.GetAxis("Horizontal") < 0)
-			myRigidbody.AddRelativeTorque(Vector3.down * myRigidbody.velocity.magnitude * (numberOfSailsUp > 0?(float)numberOfSailsUp * maxVelocityPerSail : 0.1f * maxVelocityPerSail), forceModeToUse);
+		Vector3 rotationalForce = Vector3.forward * myRigidbody.velocity.magnitude* (numberOfSailsUp > 0 ? (float)numberOfSailsUp * maxVelocityPerSail : 0.1f * maxVelocityPerSail);
 
+		if (Input.GetAxis("Horizontal") > 0)	// TURNING RIGHT, TILTING LEFT
+		{
+			myRigidbody.AddRelativeTorque(Vector3.up * myRigidbody.velocity.magnitude * (numberOfSailsUp > 0 ? (float)numberOfSailsUp * maxVelocityPerSail : 0.1f * maxVelocityPerSail), forceModeToUse);
+			if (transform.localEulerAngles.z < 20f || transform.localEulerAngles.z > (360f - 90f))
+				myRigidbody.AddRelativeTorque(rotationalForce, forceModeToUse);
+		}
+		else if (Input.GetAxis("Horizontal") < 0)	// TURNING LEFT, TILTING RIGHT
+		{
+			myRigidbody.AddRelativeTorque(Vector3.down * myRigidbody.velocity.magnitude * (numberOfSailsUp > 0?(float)numberOfSailsUp * maxVelocityPerSail : 0.1f * maxVelocityPerSail), forceModeToUse);
+			if (transform.localEulerAngles.z < 90f || transform.localEulerAngles.z > (360f-20f))
+				myRigidbody.AddRelativeTorque(-rotationalForce, forceModeToUse);
+		}
+			
+		// The editor will say the degrees go into e.g. -20f, but actually, it'll be (360-20), so we need to re-make it into -20 before applying dampening
+		float newZ = transform.localEulerAngles.z < 180f ? transform.localEulerAngles.z : transform.localEulerAngles.z -360f;
 		transform.localEulerAngles = new Vector3 (
 			0f,
 			transform.localEulerAngles.y,
-			transform.localEulerAngles.z);
+			newZ * 0.9f);	// reduce the tilt slightly
+
+		// The ship has a tendency to be pushed down, when tilting and firing cannons. This is a patch to fix it, without adding buyancy to the ship and realistic physics
+		transform.position = new Vector3 (
+			transform.position.x,
+			0f,
+			transform.position.z
+		);
+	}
+
+	public void EnterDock(Transform dockPosition)
+	{
+		this.transform.position = dockPosition.position;
+		this.transform.rotation = dockPosition.rotation;
+		numberOfSailsUp = 0;
 	}
 }

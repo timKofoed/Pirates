@@ -10,6 +10,15 @@ public class CannonController : MonoBehaviour {
 	// Note: I may need to replace this with a cannon script, so each cannon can handle it's own firing animation and projectile, cooldown, etc.
 	public List<Cannon> cannons;
 	public float cannonPower = 10f;
+	[SerializeField]
+	private float cooldownMax = 3f;
+	private float cooldownRemaining = 0f;
+
+	[SerializeField]
+	private WeaponUIController.WeaponGroup thisWeaponGroup;
+
+	[SerializeField]
+	private WeaponUIController weaponUI;
 
 	// Use this for initialization
 	void Start () {
@@ -18,7 +27,15 @@ public class CannonController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+		// Update this cannon-group's cooldown timer
+		if (cooldownRemaining > 0f)
+			cooldownRemaining -= Time.deltaTime;
+		else
+			cooldownRemaining = 0f;
+
+		// Update this cannon-group's cooldown timer visualization
+		weaponUI.UpdateCooldownForWeapon(1f - (cooldownRemaining / cooldownMax), thisWeaponGroup);
 	}
 
 	/// <summary>
@@ -29,21 +46,28 @@ public class CannonController : MonoBehaviour {
 	{
 		// aim the cannons at the position, and fire the projectiles
 //		Debug.Log("Cannons ("+ this.name +") go BOOM");
-		foreach (var cannon in cannons)
+
+		if (cooldownRemaining <= 0f)
 		{
-			// Rotate the cannons in the horizontal plane
-			cannon.transform.LookAt(worldPositionToFireAt, Vector3.up);
+			cooldownRemaining = cooldownMax;
+			foreach (var cannon in cannons)
+			{
+				// Rotate the cannons in the horizontal plane
+				cannon.transform.LookAt(worldPositionToFireAt, Vector3.up);
 
-			// cancel rotation and tilt, because they may be set by the LookAt function
-			cannon.transform.localEulerAngles = new Vector3 (
-				-30f,	// tilt the cannons upwards (?) - I could use some math to calculate the parabola of the cannons, or just set it to a default angle
-				cannon.transform.localEulerAngles.y,
-				0f
-			);
+				// cancel rotation and tilt, because they may be set by the LookAt function
+				cannon.transform.localEulerAngles = new Vector3 (
+					-30f,	// tilt the cannons upwards (?) - I could use some math to calculate the parabola of the cannons, or just set it to a default angle
+					cannon.transform.localEulerAngles.y,
+					0f
+				);
 
-			// Call a function on each cannon to fire its projectile in the specified direction (with a specific speed?)
-			cannon.Fire(cannonPower);
+				// Call a function on each cannon to fire its projectile in the specified direction (with a specific speed?)
+				cannon.Fire(cannonPower);
+			}
 		}
+
+
 
 
 
