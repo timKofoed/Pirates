@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class MiniMapCameraController : MonoBehaviour {
 
+    public static MiniMapCameraController instance;
 	public Ship playerShip;
 	public Vector3 cameraOffsetFromPlayer;
 
 	// Use this for initialization
 	void Start () {
-		
+        instance = this;
 	}
 	
 	// Update is called once per frame

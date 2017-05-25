@@ -20,9 +20,13 @@ public class CannonController : MonoBehaviour {
 	[SerializeField]
 	private WeaponUIController weaponUI;
 
+    private Ship ship;
+
 	// Use this for initialization
 	void Start () {
-		
+        ship = GetComponentInParent<Ship>();
+        if (ship == null)
+            Debug.LogError("CannonController ("+this.name+") failed to find its parent ship");
 	}
 	
 	// Update is called once per frame
@@ -44,10 +48,29 @@ public class CannonController : MonoBehaviour {
 	/// <param name="worldPositionToFireAt">World position to fire at.</param>
 	public void FireCannonsAt(Vector3 worldPositionToFireAt, float distance)
 	{
-		// aim the cannons at the position, and fire the projectiles
-//		Debug.Log("Cannons ("+ this.name +") go BOOM");
+        // if the Z angle is positive, then the ship is leaning left. The left cannons need to be modified by -z angle, and the right cannons need the +z angle
+        var shipTilt = ship.transform.localEulerAngles.z;
+        float shipTiltOffset = 0f;
 
-		if (cooldownRemaining <= 0f)
+        switch (thisWeaponGroup)
+        {
+            case WeaponUIController.WeaponGroup.Top:    shipTiltOffset = 0f;    break;
+            case WeaponUIController.WeaponGroup.Bottom: shipTiltOffset = 0f;    break;
+            case WeaponUIController.WeaponGroup.Left:
+                shipTiltOffset = shipTilt > 0f ? -shipTilt : shipTilt;
+                break;
+            case WeaponUIController.WeaponGroup.Right:
+                shipTiltOffset = shipTilt > 0f ? shipTilt : -shipTilt;
+                break;
+        }
+
+        // NOTE: negative angle will turn the cannons UP.
+        var angle = Mathf.Clamp( (Mathf.Abs(distance) * -3f) + shipTiltOffset, -45f, 10f);  // distance * -3f seems to work for upwards angle.
+
+        //Debug.Log("Cannons (" + this.name + ") go BOOM - distance ("+distance+"), angle ("+ angle + ")");
+
+        // If the cannons are not on cooldown, then aim the cannons at the position, and fire the projectiles
+        if (cooldownRemaining <= 0f)
 		{
 			cooldownRemaining = cooldownMax;
 			foreach (var cannon in cannons)
@@ -57,7 +80,7 @@ public class CannonController : MonoBehaviour {
 
 				// cancel rotation and tilt, because they may be set by the LookAt function
 				cannon.transform.localEulerAngles = new Vector3 (
-					-30f,	// tilt the cannons upwards (?) - I could use some math to calculate the parabola of the cannons, or just set it to a default angle
+                    angle,	// tilt the cannons upwards (?) - I could use some math to calculate the parabola of the cannons, or just set it to a default angle
 					cannon.transform.localEulerAngles.y,
 					0f
 				);

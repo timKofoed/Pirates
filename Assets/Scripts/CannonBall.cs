@@ -34,11 +34,11 @@ public class CannonBall : MonoBehaviour {
 
 	void OnCollisionEnter(Collision collision)
 	{
-//		Debug.Log("OnCollisionEnter: " + collision.collider.name);
+        Debug.Log("OnCollisionEnter: " + collision.collider.name);
 
-		// When the cannon ball collides with something, then apply damage (and instantiate a hit-particle-system), and remove the cannon ball
-		// Attempt to send damage to the object hit, but if it doesn't respond, then we don't care
-		collision.gameObject.BroadcastMessage("ReceiveDamage", 1, SendMessageOptions.DontRequireReceiver);
+        // When the cannon ball collides with something, then apply damage (and instantiate a hit-particle-system), and remove the cannon ball
+        // Attempt to send damage to the object hit, but if it doesn't respond, then we don't care
+        collision.gameObject.BroadcastMessage("ReceiveDamage", 1, SendMessageOptions.DontRequireReceiver);
 
 		// Disconnect the smoke from the projectile after the particle system is done making all its particles using the projectile's speed
 		if (smoke != null)
