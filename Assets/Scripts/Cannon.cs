@@ -6,6 +6,9 @@ public class Cannon : MonoBehaviour {
 
 	public GameObject cannonBallPrefab;
 
+    [SerializeField]
+    private Transform cannonBallInstantiatePosition;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -21,7 +24,7 @@ public class Cannon : MonoBehaviour {
 	/// </summary>
 	public void Fire(float power = 30f)
 	{
-		GameObject cannonBall = GameObject.Instantiate<GameObject>(cannonBallPrefab, this.transform.position, this.transform.rotation, null);
+		GameObject cannonBall = GameObject.Instantiate<GameObject>(cannonBallPrefab, cannonBallInstantiatePosition.position, cannonBallInstantiatePosition.rotation, null);
 		cannonBall.GetComponent<CannonBall>().SetParentCannon(this.gameObject);
 		cannonBall.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * power, ForceMode.VelocityChange);
 	}

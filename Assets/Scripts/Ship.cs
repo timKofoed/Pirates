@@ -222,7 +222,7 @@ public class Ship : MonoBehaviour
 			transform.localEulerAngles.y,
 			newZ * 0.9f);	// reduce the tilt slightly
 
-		// The ship has a tendency to be pushed down, when tilting and firing cannons. This is a patch to fix it, without adding buyancy to the ship and realistic physics
+		// The ship has a tendency to be pushed down when tilting and firing cannons. This is a patch to fix it, without adding buyancy to the ship and realistic physics
 		transform.position = new Vector3 (
 			transform.position.x,
 			0f,

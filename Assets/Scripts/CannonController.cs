@@ -49,25 +49,27 @@ public class CannonController : MonoBehaviour {
 	public void FireCannonsAt(Vector3 worldPositionToFireAt, float distance)
 	{
         // if the Z angle is positive, then the ship is leaning left. The left cannons need to be modified by -z angle, and the right cannons need the +z angle
-        var shipTilt = ship.transform.localEulerAngles.z;
+        // ...and if the angle is e.g. -10, then the following angle is returned as 350, so I need to change it back to the small negative number I expect
+        var shipTilt = ship.transform.localEulerAngles.z > 180.0f ? ship.transform.localEulerAngles.z - 360.0f : ship.transform.localEulerAngles.z;
         float shipTiltOffset = 0f;
 
+        // compensate for the tilt of the ship, so the cannons still aim where we wanted them to (unless the total angle becomes > 45deg relative to the deck)
         switch (thisWeaponGroup)
         {
             case WeaponUIController.WeaponGroup.Top:    shipTiltOffset = 0f;    break;
             case WeaponUIController.WeaponGroup.Bottom: shipTiltOffset = 0f;    break;
             case WeaponUIController.WeaponGroup.Left:
-                shipTiltOffset = shipTilt > 0f ? -shipTilt : shipTilt;
+                shipTiltOffset = -shipTilt;
                 break;
             case WeaponUIController.WeaponGroup.Right:
-                shipTiltOffset = shipTilt > 0f ? shipTilt : -shipTilt;
+                shipTiltOffset = shipTilt;
                 break;
         }
 
         // NOTE: negative angle will turn the cannons UP.
         var angle = Mathf.Clamp( (Mathf.Abs(distance) * -3f) + shipTiltOffset, -45f, 10f);  // distance * -3f seems to work for upwards angle.
 
-        //Debug.Log("Cannons (" + this.name + ") go BOOM - distance ("+distance+"), angle ("+ angle + ")");
+        Debug.Log("Cannons (" + this.name + ") go BOOM - distance (" + distance + "), offset ("+shipTilt+" --> "+ shipTiltOffset + ") = angle (" + angle + ")");
 
         // If the cannons are not on cooldown, then aim the cannons at the position, and fire the projectiles
         if (cooldownRemaining <= 0f)

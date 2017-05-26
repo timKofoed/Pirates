@@ -647,28 +647,6 @@ Prefab:
       propertyPath: m_Name
       value: Cannon Right Rear
       objectReference: {fileID: 0}
-    - target: {fileID: 1662329389390170, guid: a4cb86779500d4abc9a561477e7dc10a, type: 2}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1349056801368116, guid: a4cb86779500d4abc9a561477e7dc10a, type: 2}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1119384180194098, guid: a4cb86779500d4abc9a561477e7dc10a, type: 2}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 136012323316885858, guid: a4cb86779500d4abc9a561477e7dc10a,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 135309519428742622, guid: a4cb86779500d4abc9a561477e7dc10a,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a4cb86779500d4abc9a561477e7dc10a, type: 2}
   m_IsPrefabParent: 0
@@ -1327,6 +1305,10 @@ Prefab:
     - target: {fileID: 4375113718122702, guid: a4cb86779500d4abc9a561477e7dc10a, type: 2}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4102465029171802, guid: a4cb86779500d4abc9a561477e7dc10a, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a4cb86779500d4abc9a561477e7dc10a, type: 2}
@@ -5153,7 +5135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00b93646e523f4eca9bbc846ef85c083, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frontRearShootingAngle: 50
+  frontRearShootingAngle: 60
   numberOfSailsUp: 0
   maxVelocityPerSail: 80
   sails:
